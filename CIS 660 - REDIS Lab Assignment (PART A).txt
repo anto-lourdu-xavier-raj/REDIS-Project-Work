@@ -1,0 +1,389 @@
+PART - A (Introduction to Redis Tutorial)
+
+Script Command:
+
+> Tutorial
+
+// Using SET command to store the value "Fido" using "server:name"
+
+> SET server:name "fido"
+
+OK
+
+// The value stored at server:name
+
+> GET server:name
+
+"fido"
+
+// Testing case
+
+> EXISTS server:name
+
+(integer) 1
+
+> EXISTS server:blabla
+
+(integer) 0
+
+// Basic operations using DEL command and INCR command
+
+> SET connections 10
+
+OK
+
+> INCR connections
+
+(integer) 11
+
+> INCR connections
+
+(integer) 12
+
+> DEL connections
+
+(integer) 1
+
+> INCR connections
+
+(integer) 1
+
+// Incrementation of specific number
+
+> INCRBY connections 100
+
+(integer) 101
+
+// Decrement the same value of number
+
+> DECR connections
+
+(integer) 100
+
+>  DECRBY connections 10
+
+(integer) 90
+
+// Using INCR operation
+
+x = GET count
+x = x + 1
+SET count x
+
+// Problem solution
+
+Client A reads count as 10.
+Client B reads count as 10.
+Client A increments 10 and sets count to 11.
+Client B increments 10 and sets count to 11.
+
+// Using EXPIRE, TTL, PEXPIRE, and PTTL commands.
+
+> SET resource:lock "Redis Demo"
+
+OK
+
+> EXPIRE resource:lock 120
+
+(integer) 1
+
+// TTL command to delete the resources in 120 seconds
+
+> TTL resource:lock
+
+(integer) 114
+
+> TTL resource:lock
+
+(integer) 109
+
+// SET a key for TTL to be reset
+
+> SET resource:lock "Redis Demo 1"
+
+OK
+
+> EXPIRE resource:lock 120
+
+(integer) 1
+
+> TTL resource:lock
+
+(integer) 116
+
+> SET resource:lock "Redis Demo 2"
+
+OK
+
+> TTL resource:lock
+
+(integer) -1
+
+// SET command to accept further arguments
+
+> SET resource:lock "Redis Demo 3" EX 5
+OK
+
+> TTL resource:lock
+(integer) -2
+
+// Making key permanent
+
+> SET resource:lock "Redis Demo 3" EX 5
+
+OK
+
+> PERSIST resource:lock
+
+(integer) 1
+
+> TTL resource:lock
+
+(integer) -1
+
+// RPUSH command to put the element at the end of the list
+
+> RPUSH friends "Alice"
+
+(integer) 1
+
+> RPUSH friends "Bob"
+
+(integer) 2
+
+// LPUSH command to put the element at the start of the list
+
+> LPUSH friends "Sam"
+
+(integer) 3
+
+// LRANGE to give subset of the list
+
+> LRANGE friends 0 -1
+
+1) "Sam"
+2) "Alice"
+3) "Bob"
+
+> LRANGE friends 0 1
+
+1) "Sam"
+2) "Alice"
+
+> LRANGE friends 1 2
+
+1) "Alice"
+2) "Bob"
+
+// LPOP to remove the first element
+
+> LPOP friends
+
+"Sam"
+
+// RPOP to remove the last element
+
+> RPOP friends
+
+"Bob"
+
+// List with only one element
+
+> LLEN friends
+
+(integer) 1
+
+> LRANGE friends 0 -1
+
+1) "Alice"
+
+// Using RPUSH command to specify multiple elements
+
+> RPUSH friends 1 2 3
+
+(integer) 4
+
+// LLEN to obtain the length of the list
+
+> LLEN friends
+
+(integer) 4
+
+// Using SADD command to add the elements in the list
+
+> SADD superpowers "flight"
+
+(integer) 1
+
+> SADD superpowers "x-ray vision" "reflexes"
+
+(integer) 2
+
+// SREM to remove the given member from set
+
+> SREM superpowers "reflexes"
+
+1
+
+> SREM superpowers "making pizza"
+
+0
+
+// SISMEMBER to return the value as 1 and 0
+
+> SISMEMBER superpowers "flight"
+
+(integer) 1
+
+> SISMEMBER superpowers "reflexes"
+
+(integer) 0
+
+// SMEMBERS returns a list of all memebers
+
+> SMEMBERS superpowers
+
+1) "flight"
+2) "x-ray vision"
+
+// SUNION command to combines tow or more sets
+
+> SADD birdpowers "pecking"
+
+(integer) 1
+
+> SADD birdpowers "flight"
+
+(integer) 1
+
+> SUNION superpowers birdpowers
+
+1) "flight"
+2) "pecking"
+3) "x-ray vision"
+
+// SADD to return 0 or 1
+
+> SADD superpowers "flight"
+
+(integer) 0
+
+> SADD superpowers "invisibility"
+
+(integer) 1
+
+// LPOP and RPOP inorder to extract elements
+
+> SADD letters a b c d e f
+(integer) 6
+
+> SPOP letters 2
+1) "a"
+2) "b"
+
+// Remaining elements
+
+> SMEMBERS letters
+1) "f"
+2) "e"
+3) "c"
+4) "d"
+
+// Each value with an associated score
+
+> ZADD hackers 1940 "Alan Kay"
+
+(integer) 1
+
+> ZADD hackers 1906 "Grace Hopper"
+
+(integer) 1
+
+> ZADD hackers 1953 "Richard Stallman"
+
+(integer) 1
+
+> ZADD hackers 1965 "Yukihiro Matsumoto"
+
+(integer) 1
+
+> ZADD hackers 1916 "Claude Shannon"
+
+(integer) 1
+
+> ZADD hackers 1969 "Linus Torvalds"
+
+(integer) 1
+
+> ZADD hackers 1957 "Sophie Wilson"
+
+(integer) 1
+
+> ZADD hackers 1912 "Alan Turing"
+
+(integer) 1
+
+> ZRANGE hackers 2 4
+
+1) "Claude Shannon"
+2) "Alan Kay"
+3) "Richard Stallman"
+
+// Using HSET command
+
+> HSET user:1000 name "John Smith"
+
+1
+
+> HSET user:1000 email "john.smith@example.com"
+
+1
+
+> HSET user:1000 password "s3cret"
+
+1
+
+// HGETALL to save data
+
+> HGETALL user:1000
+
+1) "name"
+2) "John Smith"
+3) "email"
+4) "john.smith@example.com"
+5) "password"
+6) "s3cret"
+
+// Multiple fields
+
+> HMSET user:1001 name "Mary Jones" password "hidden" email "mjones@example.com"
+
+OK
+
+// Single field 
+
+> HGET user:1001 name
+
+"Mary Jones"
+
+// Numerical values in hash field
+
+> HSET user:1000 visits 10
+
+1
+
+> HINCRBY user:1000 visits 1
+
+(integer) 11
+
+> HINCRBY user:1000 visits 10
+
+(integer) 21
+
+> HDEL user:1000 visits
+
+(integer) 1
+
+> HINCRBY user:1000 visits 1
+
+(integer) 1
